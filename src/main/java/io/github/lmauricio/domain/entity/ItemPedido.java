@@ -25,4 +25,5 @@ public class ItemPedido {
     private Produto produto;
     @Column(name = "quantidade")
     private Integer quantidade;
+
 }

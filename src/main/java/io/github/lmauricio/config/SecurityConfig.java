@@ -27,8 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder()) // metodo de criptografia
                 .withUser("admin") // user
                 .password(passwordEncoder().encode("admin")) // senha
-                .roles("USER"); // perfil
-        //.authorities("ADMIN"); // autorizacao
+                .roles("USER", "ADMIN"); // perfil
     }
 
     @Override
@@ -44,11 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() // desabilita uma conf de permisao de seguranca ente uma api ewb e o back end
                 .authorizeRequests() // autorizacoes dos requests
-                .antMatchers("/api/clientes/**") // rotas
-                .hasRole("ADMIN") //permissao
+                    .antMatchers("/api/clientes/**") // rota
+                        .hasAnyRole("USER", "ADMIN") //permissao
+                    .antMatchers("/api/produtos/**")
+                        .hasRole("ADMIN")
+                    .antMatchers("/api/pedidos/**")
+                        .hasAnyRole("USER", "ADMIN")
                 .and()
-                .formLogin(); // criar o formulario de login default
-
+                    .formLogin(); // criar o formulario de login default
     }
 
 }

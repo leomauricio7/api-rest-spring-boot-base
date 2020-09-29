@@ -2,11 +2,14 @@ package io.github.lmauricio.rest.controller;
 
 import io.github.lmauricio.domain.entity.ItemPedido;
 import io.github.lmauricio.domain.entity.Pedido;
+import io.github.lmauricio.domain.enums.StatusPedido;
+import io.github.lmauricio.rest.dto.AtualizacaoStatusPedidoDTO;
 import io.github.lmauricio.rest.dto.InformacaoItemPedidoDTO;
 import io.github.lmauricio.rest.dto.InformacoesPedidoDTO;
 import io.github.lmauricio.rest.dto.PedidoDTO;
 import io.github.lmauricio.service.PedidoService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,6 +44,15 @@ public class PedidoController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Pedido não encontrado."));
     }
 
+    @PatchMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void updateStatus(@PathVariable("id") Integer id,
+                             @RequestBody AtualizacaoStatusPedidoDTO dto){
+        String novoStatus = dto.getNovoStatus();
+        service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+
+    }
+
     // conveter  objeto de pedido
     private InformacoesPedidoDTO converter(Pedido pedido) {
         return InformacoesPedidoDTO
@@ -50,6 +62,7 @@ public class PedidoController {
                 .cpf(pedido.getCliente().getCpf())
                 .nomeCliente(pedido.getCliente().getNome())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().name())
                 .items(converter(pedido.getItems()))
                 .build();
     }

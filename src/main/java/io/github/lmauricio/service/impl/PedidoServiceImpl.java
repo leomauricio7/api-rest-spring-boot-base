@@ -4,10 +4,12 @@ import io.github.lmauricio.domain.entity.Cliente;
 import io.github.lmauricio.domain.entity.ItemPedido;
 import io.github.lmauricio.domain.entity.Pedido;
 import io.github.lmauricio.domain.entity.Produto;
+import io.github.lmauricio.domain.enums.StatusPedido;
 import io.github.lmauricio.domain.repository.Clientes;
 import io.github.lmauricio.domain.repository.ItemsPedido;
 import io.github.lmauricio.domain.repository.Pedidos;
 import io.github.lmauricio.domain.repository.Produtos;
+import io.github.lmauricio.exception.PedidoNaoEncontradoException;
 import io.github.lmauricio.exception.RegraNegocioException;
 import io.github.lmauricio.rest.dto.ItemPedidoDTO;
 import io.github.lmauricio.rest.dto.PedidoDTO;
@@ -41,6 +43,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itemPedidos = converterItems(pedido, dto.getItems());
         repository.save(pedido);
@@ -52,6 +55,17 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Optional<Pedido> obterPedidoCompleto(Integer id) {
         return repository.findByIdFetchItems(id);
+    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        repository
+                .findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return repository.save(pedido);
+                }).orElseThrow( () -> new PedidoNaoEncontradoException());
     }
 
     private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items) {

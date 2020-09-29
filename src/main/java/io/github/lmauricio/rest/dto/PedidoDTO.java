@@ -1,6 +1,7 @@
 package io.github.lmauricio.rest.dto;
 
 
+import io.github.lmauricio.validation.NotEmptyList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,17 +11,17 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /*
-* {
-*	"cliente": 1,
-*	"total": 100,
-*	"items": [
-*		{
-*			"produto": 1,
-*			"quantidade": 1
-*		}
-*	]
-* }
-*/
+ * {
+ *	"cliente": 1,
+ *	"total": 100,
+ *	"items": [
+ *		{
+ *			"produto": 1,
+ *			"quantidade": 1
+ *		}
+ *	]
+ * }
+ */
 // DTO -> data tranfere object
 // padrao para mapear objects de entidades simples
 
@@ -36,5 +37,6 @@ public class PedidoDTO {
     @NotNull(message = "Campo total é obrigatório,")
     private BigDecimal total;
 
+    @NotEmptyList(message = "Pedido não pode ser realizado sem itens.")
     private List<ItemPedidoDTO> items;
 }

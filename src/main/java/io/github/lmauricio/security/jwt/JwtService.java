@@ -67,15 +67,14 @@ public class JwtService {
     public static void main(String[] args) {
         ConfigurableApplicationContext contexto = SpringApplication.run(VendasApplication.class);
         JwtService service = contexto.getBean(JwtService.class);
-        Usuario usuario = new Usuario();
-        usuario.setLogin("fulano");
+        Usuario usuario = Usuario.builder().login("fulano").build();
         usuario.setSenha("123");
         String token = service.gerarToken(usuario);
-        System.out.println("token: "+ token);
+        System.out.println("token: " + token);
 
         boolean isTokenValido = service.tokenValido(token);
-        System.out.println("Token valido: "+isTokenValido);
+        System.out.println("Token valido: " + isTokenValido);
 
-        System.out.println("login token: "+ service.obterLoginUsuario(token));
+        System.out.println("login token: " + service.obterLoginUsuario(token));
     }
 }

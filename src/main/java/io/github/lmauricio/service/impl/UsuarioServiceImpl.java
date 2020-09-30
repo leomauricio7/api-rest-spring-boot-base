@@ -2,6 +2,7 @@ package io.github.lmauricio.service.impl;
 
 import io.github.lmauricio.domain.entity.Usuario;
 import io.github.lmauricio.domain.repository.Usuarios;
+import io.github.lmauricio.exception.SenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,17 @@ public class UsuarioServiceImpl implements UserDetailsService {
     @Transactional
     public Usuario salvar(Usuario usuario) {
         return usuariosRepository.save(usuario);
+    }
+
+    public UserDetails autenticar(Usuario usuario) {
+        UserDetails userDetails = loadUserByUsername(usuario.getLogin()); // pega o usuario
+        boolean senhasBatem = encoder.matches(usuario.getSenha(), userDetails.getPassword()); // valida a senha
+
+        if (senhasBatem) {
+            return userDetails;
+        }
+
+        throw new SenhaInvalidaException();
     }
 
     @Override

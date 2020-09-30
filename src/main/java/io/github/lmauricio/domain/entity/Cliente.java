@@ -21,7 +21,7 @@ import java.util.Set;
 public class Cliente {
 
     @Id //define a primary key da entity
-    @GeneratedValue(strategy = GenerationType.AUTO) // define o auto_increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // define o auto_increment
     @Column(name = "id") //definine as propriedas da coluna
     private Integer id;
 

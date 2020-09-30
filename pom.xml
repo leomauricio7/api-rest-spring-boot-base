@@ -44,6 +44,12 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <!-- Mysql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <!-- Automatiza a geracao de gettes, settes, construtos entre outros-->
         <dependency>

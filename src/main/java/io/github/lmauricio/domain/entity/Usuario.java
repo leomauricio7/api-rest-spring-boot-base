@@ -16,10 +16,10 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nome")
+    @Column(name = "login")
     @NotEmpty(message = "{campo.login.obrigatorio}")
     private String login;
 

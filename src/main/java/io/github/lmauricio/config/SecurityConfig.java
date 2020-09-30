@@ -4,7 +4,6 @@ import io.github.lmauricio.security.jwt.JwtAuthFilter;
 import io.github.lmauricio.security.jwt.JwtService;
 import io.github.lmauricio.service.impl.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,8 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 // anotation de web security
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Value("${security.enable.csrf}")
-    private boolean csrfEnabled;
 
     @Autowired
     private UsuarioServiceImpl usuarioService;
@@ -40,8 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // bean para filtar o JWT do request
     @Bean
-    public OncePerRequestFilter jwtFilter(){
-        return  new JwtAuthFilter(jwtService, usuarioService);
+    public OncePerRequestFilter jwtFilter() {
+        return new JwtAuthFilter(jwtService, usuarioService);
     }
 
     //metodo de configuracao da parte de autenticacao do usuário
@@ -65,30 +62,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          *   - authenticated - basta ta logado
          *
          * */
-
         http.csrf().disable();
-
         http
+                //.csrf().disable()
                 .authorizeRequests() // autorizacoes dos requests
-                .antMatchers("/api/clientes/**")
-                    .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/produtos/**")
-                    .hasRole("ADMIN")
-                .antMatchers("/api/pedidos/**")
-                    .hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/usuarios/**")
-                    .permitAll()
-                //.anyRequest().authenticated()
-                .and() // volta pra raiz httpSecurity
-                    .sessionManagement() // informa que vai usar sessions
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // sesions do tipo STATELESS
-                .and() // volta pra raiz do httpSecurity
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class); // colocar dentro da sessao o usuario do filtro do jwt
-
-//        if (csrfEnabled) {
-//            System.out.println("csrfEnabled: " + csrfEnabled);
-//            http.csrf().disable();
-//        }
+                    .antMatchers("/api/clientes/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/produtos/**")
+                        .hasRole("ADMIN")
+                    .antMatchers("/api/pedidos/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/usuarios/**")
+                        .permitAll()
+                .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
 }

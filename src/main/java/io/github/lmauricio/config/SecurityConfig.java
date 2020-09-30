@@ -1,5 +1,7 @@
 package io.github.lmauricio.config;
 
+import io.github.lmauricio.service.impl.UsuarioServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,6 +18,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.enable.csrf}")
     private boolean csrfEnabled;
 
+    @Autowired
+    private UsuarioServiceImpl usuarioService;
+
     // metodos para configurar o spring security
 
     // bean para criptograr e descriptografar a senha de um usuário
@@ -27,12 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     //metodo de configuracao da parte de autenticacao do usuário
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Ex: autenticacao em memoria
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("fulano")
-                .password(passwordEncoder().encode("123"))
-                .roles("USER", "ADMIN");
+        // Ex: autenticacao em banco
+        auth.
+                userDetailsService(usuarioService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -47,10 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          *   - authenticated - basta ta logado
          * */
 
+        http.csrf().disable();
+
         http
                 .authorizeRequests() // autorizacoes dos requests
                 .antMatchers("/api/clientes/**")
-                .hasAnyRole("USER")
+                .hasAnyRole("USER","ADMIN")
                 .antMatchers("/api/produtos/**")
                 .hasRole("ADMIN")
                 .antMatchers("/api/pedidos/**")
@@ -58,10 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .httpBasic();
 
-        if (csrfEnabled) {
-            System.out.println("csrfEnabled: " + csrfEnabled);
-            http.csrf().disable();
-        }
+//        if (csrfEnabled) {
+//            System.out.println("csrfEnabled: " + csrfEnabled);
+//            http.csrf().disable();
+//        }
     }
 
 }

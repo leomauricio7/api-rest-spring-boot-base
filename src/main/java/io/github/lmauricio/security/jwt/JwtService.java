@@ -1,5 +1,6 @@
-package io.github.lmauricio;
+package io.github.lmauricio.security.jwt;
 
+import io.github.lmauricio.VendasApplication;
 import io.github.lmauricio.domain.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

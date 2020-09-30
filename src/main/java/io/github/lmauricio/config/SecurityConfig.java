@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     //metodo de configuracao da parte de autenticacao do usuário
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Ex: autenticacao em banco
+        // Ex: autenticacao em banco auth basic
         auth.
                 userDetailsService(usuarioService)
                 .passwordEncoder(passwordEncoder());
